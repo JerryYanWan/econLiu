@@ -11,9 +11,9 @@ p = 0.5
 s = 0.1
 beta = lambda_H + lambda_L + mu + alpha
 
-T = 5
-I = 5
-N = 5
+T = 10
+I = 10
+N = 20
 
 V_test = np.ones((T, I+T, N)) * -1.
 
@@ -47,13 +47,12 @@ def V_fast(t, i, n):
           alpha / beta * get(t-1, i, n)
 
 for t in xrange(0, T):
+    print "t = %s" %t
     for i in xrange(0, I):
+        print "i = %s" % i
         for n in xrange(0, N):
             V_test[t, i, n] = V_fast(t, i, n)
 
 print V_test[:T,:I,:N]
 
 # plot t-i graph when fixing n
-n = 1
-plt.figure("t-i")
-plt.plot(np.arange(I), V_test[])
