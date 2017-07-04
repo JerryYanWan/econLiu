@@ -1,1 +1,5 @@
-recursively calculate econ method
+#recursively calculate econ method
+
+```bash
+python iter.py
+```
