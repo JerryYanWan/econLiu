@@ -1,5 +1,5 @@
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 # initialize all the parameters
 w = 1.
@@ -15,30 +15,17 @@ T = 5
 I = 5
 N = 5
 
-V_test = np.zeros((T, I, N))
-
-
-# normal recursive function
-def V(t, i, n):
-    if (t == 0):
-        return 0
-    elif (n == 0 and i != 0):
-        return w * i + (lambda_H + lambda_L) / beta * V(t - 1, i + 1, 0) + \
-          mu / beta * V(t-1, i-1, 0) + \
-          alpha / beta * V(t-1, i, 0)
-    elif (n != 0 and i == 0):
-        return (lambda_H + lambda_L) / beta * np.min([V(t-1, 1, n), p*(V(t-1, 0, n-1)+s)+(1-p)*V(t-1, 1, n)]) + \
-          mu / beta * V(t-1, 0, n) + \
-          alpha / beta * V(t-1, 0, n)
-    else:
-        return w * i + (lambda_H + lambda_L) / beta * np.min([V(t-1, i+1, n), p*(V(t-1, i, n-1)+s)+(1-p)*V(t-1, i+1, n)]) + \
-          mu / beta * V(t-1, i-1, n) + \
-          alpha / beta * V(t-1, i, n)
+V_test = np.ones((T, I+T, N)) * -1.
 
 def get(t, i, n):
-    if (t >= T or n >= N or i >= I or t < 0 or n < 0 or i < 0):
+    if (t == 0):
         return 0.
+    elif (t >= T or n >= N or i >= I+T or t < 0 or n < 0 or i < 0):
+        return 0.
+    elif (V_test[t, i, n] != -1):
+        return V_test[t, i, n]
     else:
+        V_test[t, i, n] = V_fast(t, i, n)
         return V_test[t, i, n]
 
 # fast version using dynamic programming
@@ -62,6 +49,11 @@ def V_fast(t, i, n):
 for t in xrange(0, T):
     for i in xrange(0, I):
         for n in xrange(0, N):
-            V_test[t, i, n] = V(t, i, n)
+            V_test[t, i, n] = V_fast(t, i, n)
 
-print V_test
+print V_test[:T,:I,:N]
+
+# plot t-i graph when fixing n
+n = 1
+plt.figure("t-i")
+plt.plot(np.arange(I), V_test[])
